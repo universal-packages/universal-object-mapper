@@ -1,9 +1,9 @@
-export type TraversalCallback = (vaue: any) => any
+export type TraversalCallback = (value: any, key: string) => any
 export type KeyInspector = 'simple' | 'prototypeChain'
 
 /** Contains object mapper configurations */
 export interface MapObjectOptions {
-  ingonoreInaccessible?: boolean
+  ignoreInaccessible?: boolean
   ignoreLevelsBeyondMaxDepth?: boolean
   keyInspector?: KeyInspector
   maxDepth?: number
@@ -29,7 +29,7 @@ export interface ObjectMap {
   freeSlot?: any
 }
 
-/** Internal recursion axuliar object */
+/** Internal recursion helper object */
 export interface Context {
   visited: {
     values: any[]

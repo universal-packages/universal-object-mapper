@@ -2,17 +2,17 @@ import { MapObjectOptions, ObjectMap, Context, TraversalCallback } from './mapOb
 
 /**
  *
- * A object mapper will traverse an object recursivally and will generate a record for every property
+ * A object mapper will traverse an object recursively and will generate a record for every property
  * in it describing it, or if a property is an object will map it as a object map as well.
  *
- * If the object mapper finds a loop in the hierarchy it will refenrece the previously processed
+ * If the object mapper finds a loop in the hierarchy it will reference the previously processed
  * object map for the object that creates the loop.
  *
  */
 
 /** Recursively maps an object and returns on object map of it */
-export function mapObject(subject: any, options: MapObjectOptions = { ingonoreInaccessible: true, keyInspector: 'simple' }, callback?: TraversalCallback): ObjectMap {
-  const finalOptions: MapObjectOptions = { ingonoreInaccessible: true, keyInspector: 'simple', ...options }
+export function mapObject(subject: any, options: MapObjectOptions = null, callback?: TraversalCallback): ObjectMap {
+  const finalOptions: MapObjectOptions = { ignoreInaccessible: true, keyInspector: 'simple', ...options }
   const context: Context = { visited: { values: [], analogs: [] }, nextId: 0 }
 
   return recursiveMap(subject, 0, context, finalOptions, callback)
@@ -30,7 +30,7 @@ function recursiveMap(subject: any, level: number, context: Context, options: Ma
     const objectMap: ObjectMap = { id: context.nextId++, level, properties: {}, type: subjectType }
     const subjectKeys = getAllPropertyNames(subject, options)
 
-    // We push them already so they can be found in subsecuent recursivity
+    // We push them already so they can be found in subsequent recursively
     context.visited.values.push(subject)
     context.visited.analogs.push(objectMap)
 
@@ -39,7 +39,7 @@ function recursiveMap(subject: any, level: number, context: Context, options: Ma
 
       try {
         if (callback) {
-          const potentialValue = callback(subject[currentKey])
+          const potentialValue = callback(subject[currentKey], currentKey)
 
           if (potentialValue) {
             subject[currentKey] = potentialValue
@@ -66,7 +66,7 @@ function recursiveMap(subject: any, level: number, context: Context, options: Ma
             objectMap.properties[currentKey] = { descriptor, level, propertyKey: currentKey, type, value }
         }
       } catch {
-        if (!options.ingonoreInaccessible) {
+        if (!options.ignoreInaccessible) {
           objectMap.properties[currentKey] = { error: 'INACCESSIBLE', level, propertyKey: currentKey }
         }
       }
@@ -76,7 +76,7 @@ function recursiveMap(subject: any, level: number, context: Context, options: Ma
   }
 }
 
-/** Gets all properties realted to an object and filter them if configured */
+/** Gets all properties related to an object and filter them if configured */
 function getAllPropertyNames(subject: any, options: MapObjectOptions): string[] {
   let propertyKeys = []
 
@@ -98,8 +98,7 @@ function getAllPropertyNames(subject: any, options: MapObjectOptions): string[] 
     }
   }
 
-  // Filter properties first by including patterns and if not
-  // By inlcuding patterns
+  // Filter properties first by including patterns and if not by including patterns
   if (options.propertyFilter) {
     if (options.propertyFilter.exclude) {
       return propertyKeys.filter((propertyKey: string): boolean => {

@@ -14,7 +14,9 @@ describe('mapObject', (): void => {
   })
 
   it('can callback for every entry', async (): Promise<void> => {
-    const result = mapObject({ hola: 'hello' }, null, (value: any): any => {
+    const myObject = { hola: 'hello' }
+
+    const result = mapObject(myObject, null, (_value: any, _key: string): any => {
       return 'other value post processing it'
     })
 
@@ -24,6 +26,8 @@ describe('mapObject', (): void => {
       properties: { hola: { descriptor: undefined, propertyKey: 'hola', level: 0, type: 'string', value: 'other value post processing it' } },
       type: 'object'
     })
+
+    expect(myObject).toEqual({ hola: 'other value post processing it' })
   })
 
   it('can map an object recursively', async (): Promise<void> => {
@@ -105,7 +109,7 @@ describe('mapObject', (): void => {
   })
 
   it('can map an object by its prototype chain', async (): Promise<void> => {
-    const result = mapObject(EventEmitter, { keyInspector: 'prototypeChain', ingonoreInaccessible: false })
+    const result = mapObject(EventEmitter, { keyInspector: 'prototypeChain', ignoreInaccessible: false })
 
     expect(result).toMatchObject({
       properties: {
