@@ -12,9 +12,11 @@ For those not so common situations where you just want to know the composition o
 npm install @universal-packages/object-mapper
 ```
 
-## mapObject()
+## Global methods
 
-Will traverse an object recursivally and will generate a record for every property in it describing it, or if a property is an object will map it as a object map as well. If the object mapper finds a loop in the hierarchy it will refenrece the previously processed object map for the object that creates the loop.
+#### **`mapObject(subject: Object, [options, callback)`**
+
+Will traverse an object recursively and will generate a record for every property in it describing it, or if a property is an object will map it as a object map as well. If the object mapper finds a loop in the hierarchy it will reference the previously processed object map for the object that creates the loop.
 
 ```js
 import { mapObject } from '@universal-packages/object-mapper'
@@ -29,54 +31,54 @@ const result = mapObject({ hola: 'hello' })
 // > }
 ```
 
-## Options
+### Options
 
-- **`ingonoreInaccessible`** `boolean`
+- **`ignoreInaccessible`** `boolean` `default: true`
   Some properties in the prototype chain can't be accessed in any way, you can get an error of this event or just ignore those properties
 
 - **`ignoreLevelsBeyondMaxDepth`** `boolean`
   If a property is in a level beyond the max you can ignore it or get an error of the event.
 
-- **`keyInspector`** `'simple' | 'prototypeChain'`
-  A simple key inspector will `getOwnPropertyNames` to get propertiess from the object, or you can opt to get all properties going all up the prototype chain, usefull to get properties inherited in classes.
+- **`keyInspector`** `'simple' | 'prototypeChain'` `default: simple`
+  A simple key inspector will `getOwnPropertyNames` to get properties from the object, or you can opt to get all properties going all up the prototype chain, useful to get properties inherited in classes.
 - **`maxDepth`** `number`
   Max level the recursive traversal can reach
-- **`propertyFilter`** `{ include?: RegExp | string[]; exclude?: RegExp | string[] }`
-  Include this if you want to only process certain properties from the object
+- **`propertyFilter`**
 
-  for example to include only a group of properties:
+  - **`include`** `RegExp | string[]`
+    include only matching property names.
 
-  ```js
-  import { mapObject } from '@universal-packages/object-mapper'
+    ```js
+    import { mapObject } from '@universal-packages/object-mapper'
 
-  const options = {
-    propertyFilter: { include: ['property1', 'property3'] }
-  }
+    const options = {
+      propertyFilter: { include: ['property1', 'property3'] }
+    }
 
-  const result = mapObject({ property1: '1', property2: '2', property3: '3' }, options)
+    const result = mapObject({ property1: '1', property2: '2', property3: '3' }, options)
 
-  console.log(result)
+    console.log(result)
 
-  // > { properties: { property1: { ... }, property3: { ... } } }
-  ```
+    // > { properties: { property1: { ... }, property3: { ... } } }
+    ```
 
-  for the contrary you can exclude them from the result
+  - **`exclude`** `RegExp | string[]`
 
-  ```typescript
-  import { mapObject } from '@universal-packages/object-mapper'
+    ```js
+    import { mapObject } from '@universal-packages/object-mapper'
 
-  const options = {
-    propertyFilter: { exclude: ['property1', 'property3'] }
-  }
+    const options = {
+      propertyFilter: { exclude: ['property1', 'property3'] }
+    }
 
-  const result = mapObject({ property1: '1', property2: '2', property3: '3' }, options)
+    const result = mapObject({ property1: '1', property2: '2', property3: '3' }, options)
 
-  console.log(result)
+    console.log(result)
 
-  // > { properties: { property2: { ... } } }
-  ```
+    // > { properties: { property2: { ... } } }
+    ```
 
-## Callback
+### Callback
 
 Use a callback for every value visited to use it or modify it in any way in the original object.
 
