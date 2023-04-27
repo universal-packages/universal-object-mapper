@@ -41,7 +41,7 @@ function recursiveMap(subject: any, level: number, context: Context, options: Ma
         if (callback) {
           const potentialValue = callback(subject[currentKey], currentKey)
 
-          if (potentialValue) {
+          if (potentialValue !== undefined) {
             subject[currentKey] = potentialValue
           }
         }
