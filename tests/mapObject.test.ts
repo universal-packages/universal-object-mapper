@@ -1,4 +1,5 @@
 import { EventEmitter } from 'events'
+
 import { mapObject } from '../src'
 
 describe('mapObject', (): void => {

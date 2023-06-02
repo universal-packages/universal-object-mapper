@@ -1,4 +1,4 @@
-import { MapObjectOptions, ObjectMap, Context, TraversalCallback } from './mapObject.types'
+import { Context, MapObjectOptions, ObjectMap, TraversalCallback } from './mapObject.types'
 
 /**
  *
