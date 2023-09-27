@@ -2,7 +2,7 @@ import { EventEmitter } from 'events'
 
 import { mapObject } from '../src'
 
-describe('mapObject', (): void => {
+describe(mapObject, (): void => {
   it('can map a simple object', async (): Promise<void> => {
     const result = mapObject({ hola: 'hello' })
 
